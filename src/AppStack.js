@@ -5,7 +5,7 @@ import { AuthContext } from "./AuthProvider";
 import { Button, Text, View } from "react-native";
 import axios from 'axios';
 
-axios.defaults.baseURL = 'http://airlock-example.test';
+//axios.defaults.baseURL = 'http://airlock-example.test';
 
 const Stack = createStackNavigator();
 
@@ -13,11 +13,13 @@ function DashboardScreen({ navigation }) {
   const { user, logout } = useContext(AuthContext)
   const [name, setName] = useState(null);
 
+  console.log(user)
   useEffect(() => {
     axios.defaults.headers.common['Authorization'] = `Bearer ${user.token}`;
 
-    axios.get('/api/user')
+    axios.get('http://localhost:8000/api/user')
       .then(response => {
+        console.log(response.data)
         setName(response.data.name);
       })
       .catch(error => {
@@ -30,7 +32,7 @@ function DashboardScreen({ navigation }) {
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>Dashboard Screen Logged In View</Text>
       <Text>User: {user.email}</Text>
-      <Text>User from Server: {name}</Text>
+      <Text>User from Server: {user.name}</Text>
       <Button title="Go to Settings" onPress={() => navigation.navigate('Settings')} />
       <Button title="Logout" onPress={() => logout()} />
     </View>

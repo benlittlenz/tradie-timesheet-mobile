@@ -3,7 +3,8 @@ import { AsyncStorage } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import axios from 'axios';
 
-axios.defaults.baseURL = 'http://airlock-example.test';
+//axios.defaults.baseURL = 'http://localhost:8000';
+//axios.defaults.withCredentials = true
 
 export const AuthContext = React.createContext({});
 
@@ -16,18 +17,41 @@ export const AuthProvider = ({children}) => {
       value={{
         user,
         login: (email, password) => {
-          
-          const fakeUser = {
-            email: 'bob@bob.com',
-            token: 'fake-token'
-          }
 
-          setUser(fakeUser)
-          SecureStore.setItemAsync('user', JSON.stringify(fakeUser))
+          axios.post('http://localhost:8000/api/airlock/token', {
+            email,
+            password,
+            device_name: 'mobile'
+          })
+          .then(res => {
+            const userResponse = {
+              email: res.data.user.email,
+              name: res.data.user.name,
+              company: res.data.user.company_id,
+              id: res.data.user.id,
+              token: res.data.token
+            }
+
+            setUser(userResponse)
+            SecureStore.setItemAsync('user', JSON.stringify(userResponse))
+
+            console.log(userResponse)
+          }).catch(err => {
+            console.log(err);
+          })
         },
         logout: () => {
-          setUser(null);
-          SecureStore.deleteItemAsync('user')
+          axios.defaults.headers.common['Authorization'] = `Bearer ${user.token}`;
+
+          axios.post('http://localhost:8000/api/logout')
+            .then(res => {
+              setUser(null);
+              SecureStore.deleteItemAsync('user')
+            }).catch(err => {
+              console.log(err);
+            })
+
+          
         }
       }}>
       {children}
