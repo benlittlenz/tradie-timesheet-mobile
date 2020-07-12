@@ -10,7 +10,7 @@ import axios from 'axios';
 const Stack = createStackNavigator();
 
 function DashboardScreen({ navigation }) {
-  const { user, logout } = useContext(AuthContext)
+  const { user, logout, signIn } = useContext(AuthContext)
   const [name, setName] = useState(null);
 
   console.log(user)
@@ -35,6 +35,8 @@ function DashboardScreen({ navigation }) {
       <Text>User from Server: {user.name}</Text>
       <Button title="Go to Settings" onPress={() => navigation.navigate('Settings')} />
       <Button title="Logout" onPress={() => logout()} />
+
+      <Button title="Time In" onPress={() => signIn(user.id, user.company)}/>
     </View>
   );
 }

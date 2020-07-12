@@ -50,8 +50,18 @@ export const AuthProvider = ({children}) => {
             }).catch(err => {
               console.log(err);
             })
+        },
 
-          
+        signIn: async (userID, companyID) => {
+          console.log(userID, companyID)
+          const res = await axios.post('http://localhost:8000/api/timesheet', {
+            company_id: companyID,
+            job_id: 1,
+            user_id: userID,
+            started_at: '2020-07-13 22:24:00',
+            stopped_at: '',
+            total_hours: 2,
+          })
         }
       }}>
       {children}

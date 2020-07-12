@@ -7,7 +7,7 @@ import { AppStack } from './AppStack';
 import * as SecureStore from 'expo-secure-store';
 
 export default function Routes() {
-  const { user, setUser, login, logout } = useContext(AuthContext)
+  const { user, setUser, login, logout, signIn } = useContext(AuthContext)
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
